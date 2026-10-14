@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Keep the screenshots out of downloaded zips and Composer packages
+/docs export-ignore

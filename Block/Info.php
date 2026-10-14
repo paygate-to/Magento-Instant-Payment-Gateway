@@ -12,6 +12,13 @@ use Magento\Payment\Block\Info as BaseInfo;
 class Info extends BaseInfo
 {
     /**
+     * Same as Magento's default payment info, with long values (addresses, TXIDs) wrapped to fit the column.
+     *
+     * @var string
+     */
+    protected $_template = 'PayGate_InstantPayment::info/card.phtml';
+
+    /**
      * @param DataObject|array|null $transport
      * @return DataObject
      */
