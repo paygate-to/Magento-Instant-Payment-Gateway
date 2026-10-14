@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <!-- Settings shared by both card payment methods -->
+            <paygate_card>
+                <wallet/>
+                <checkout_domain>checkout.paygate.sbs</checkout_domain>
+                <api_domain>api.paygate.to</api_domain>
+                <tolerance>0.60</tolerance>
+                <cancel_after>24</cancel_after>
+            </paygate_card>
+
+            <!-- Hosted multi-provider checkout (pay.php) -->
+            <paygate_hosted>
+                <active>0</active>
+                <model>PayGateHostedFacade</model>
+                <title>Credit Card</title>
+                <description>Pay via credit card</description>
+                <logo_url/>
+                <background_color/>
+                <theme_color/>
+                <button_color/>
+                <order_status>paygate_pending</order_status>
+                <payment_action>authorize</payment_action>
+                <allowspecific>0</allowspecific>
+                <sort_order>10</sort_order>
+                <can_initialize>1</can_initialize>
+                <can_use_checkout>1</can_use_checkout>
+                <can_use_internal>0</can_use_internal>
+                <can_authorize>0</can_authorize>
+                <can_capture>0</can_capture>
+                <can_refund>0</can_refund>
+                <can_void>0</can_void>
+                <can_cancel>1</can_cancel>
+                <is_gateway>0</is_gateway>
+                <is_offline>0</is_offline>
+            </paygate_hosted>
+
+            <!-- One provider of your choice (process-payment.php) -->
+            <paygate_provider>
+                <active>0</active>
+                <model>PayGateProviderFacade</model>
+                <title>Credit Card</title>
+                <description>Credit card</description>
+                <provider>moonpay</provider>
+                <minimum_amount>15</minimum_amount>
+                <order_status>paygate_pending</order_status>
+                <payment_action>authorize</payment_action>
+                <allowspecific>0</allowspecific>
+                <sort_order>20</sort_order>
+                <can_initialize>1</can_initialize>
+                <can_use_checkout>1</can_use_checkout>
+                <can_use_internal>0</can_use_internal>
+                <can_authorize>0</can_authorize>
+                <can_capture>0</can_capture>
+                <can_refund>0</can_refund>
+                <can_void>0</can_void>
+                <can_cancel>1</can_cancel>
+                <is_gateway>0</is_gateway>
+                <is_offline>0</is_offline>
+            </paygate_provider>
+        </payment>
+    </default>
+</config>

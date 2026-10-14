@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Payment method facades -->
+    <virtualType name="PayGateHostedFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">PayGate\InstantPayment\Model\Config::METHOD_HOSTED</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PayGate\InstantPayment\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayGateHostedValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">PayGateHostedValidatorPool</argument>
+            <argument name="commandPool" xsi:type="object">PayGateCardCommandPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayGateProviderFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">PayGate\InstantPayment\Model\Config::METHOD_PROVIDER</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PayGate\InstantPayment\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayGateProviderValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">PayGateProviderValidatorPool</argument>
+            <argument name="commandPool" xsi:type="object">PayGateCardCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Method configuration readers -->
+    <virtualType name="PayGateHostedGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayGate\InstantPayment\Model\Config::METHOD_HOSTED</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayGateProviderGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayGate\InstantPayment\Model\Config::METHOD_PROVIDER</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayGateHostedValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayGateHostedGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayGateProviderValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayGateProviderGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayGateHostedValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayGateHostedValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayGateProviderValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayGateProviderValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Applicable countries (availability without a payout wallet: Observer\MethodAvailability) -->
+    <virtualType name="PayGateHostedCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">PayGateHostedGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayGateProviderCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">PayGateProviderGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayGateHostedValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">PayGateHostedCountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayGateProviderValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">PayGateProviderCountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Commands: only "initialize" (create the payment at PayGate while the order is placed) -->
+    <virtualType name="PayGateCardCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="initialize" xsi:type="string">PayGate\InstantPayment\Gateway\Command\InitializeCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Dedicated log file: var/log/paygate_card.log -->
+    <virtualType name="PayGateCardLogHandler" type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="fileName" xsi:type="string">/var/log/paygate_card.log</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayGateCardLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="name" xsi:type="string">paygate_card</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="debug" xsi:type="object">PayGateCardLogHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="PayGate\InstantPayment\Gateway\Command\InitializeCommand">
+        <arguments>
+            <argument name="logger" xsi:type="object">PayGateCardLogger</argument>
+        </arguments>
+    </type>
+    <type name="PayGate\InstantPayment\Controller\Callback\Index">
+        <arguments>
+            <argument name="logger" xsi:type="object">PayGateCardLogger</argument>
+        </arguments>
+    </type>
+    <type name="PayGate\InstantPayment\Model\OrderPayment">
+        <arguments>
+            <argument name="logger" xsi:type="object">PayGateCardLogger</argument>
+        </arguments>
+    </type>
+</config>

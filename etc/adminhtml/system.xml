@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="paygate_card" translate="label comment" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>PayGate.to Card Payments (instant payouts, no KYC)</label>
+                <comment><![CDATA[Accept Visa, Mastercard, Amex, Apple Pay, Google Pay and more. Every payment is paid out instantly to your own USDC (Polygon) wallet. <a href="https://paygate.to/instant-payment-gateway/" target="_blank" rel="noopener">How it works</a> &middot; <a href="https://paygate.to/white-label-api-custom-domain-guide/" target="_blank" rel="noopener">Custom domain guide</a>]]></comment>
+
+                <group id="settings" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1">
+                    <label>Payout wallet and domains (shared by both payment methods)</label>
+                    <field id="wallet" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1">
+                        <label>USDC (Polygon) Wallet Address</label>
+                        <config_path>payment/paygate_card/wallet</config_path>
+                        <backend_model>PayGate\InstantPayment\Model\Config\Backend\Wallet</backend_model>
+                        <comment>Insert your USDC (Polygon) wallet address to receive instant payouts. Payouts may be sent in ETH, USDC or USDT (Polygon or BEP-20) or the POL native token. The same wallet receives all of them. Use a self-custodial wallet that you control, never an exchange deposit address.</comment>
+                    </field>
+                    <field id="checkout_domain" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
+                        <label>Custom Domain</label>
+                        <config_path>payment/paygate_card/checkout_domain</config_path>
+                        <backend_model>PayGate\InstantPayment\Model\Config\Backend\CheckoutDomain</backend_model>
+                        <comment><![CDATA[Follow the <a href="https://paygate.to/white-label-api-custom-domain-guide/" target="_blank" rel="noopener">custom domain guide</a> to use your own domain name for the checkout pages, for example checkout.yourdomain.com. Leave as checkout.paygate.sbs to use the default.]]></comment>
+                    </field>
+                    <field id="api_domain" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1">
+                        <label>Custom API Domain</label>
+                        <config_path>payment/paygate_card/api_domain</config_path>
+                        <backend_model>PayGate\InstantPayment\Model\Config\Backend\ApiDomain</backend_model>
+                        <comment><![CDATA[Paste your free dedicated API endpoint from the <a href="https://paygate.to/white-label-api-custom-domain-guide/#dedicated-endpoint" target="_blank" rel="noopener">custom domain guide</a> (for example api-yourshop-1a2b&hellip;.paygate.to) to keep payments running when the shared api.paygate.to is under attack. You can also use your own white-label domain. Leave as api.paygate.to to use the shared API.]]></comment>
+                    </field>
+                    <field id="tolerance" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1">
+                        <label>Fees Tolerance</label>
+                        <config_path>payment/paygate_card/tolerance</config_path>
+                        <source_model>PayGate\InstantPayment\Model\Config\Source\Tolerance</source_model>
+                        <comment>How far below the order total a payment may be (to allow for higher provider fees) before the order is put on hold for you to review. A payment below it usually means the amount was changed on the checkout page.</comment>
+                    </field>
+                    <field id="cancel_after" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1">
+                        <label>Cancel Unpaid Orders After (hours)</label>
+                        <config_path>payment/paygate_card/cancel_after</config_path>
+                        <frontend_class>validate-digits</frontend_class>
+                        <comment>Orders still awaiting card payment after this many hours are cancelled and their stock is released. 0 = never. Requires Magento cron.</comment>
+                    </field>
+                </group>
+
+                <group id="hosted" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Hosted checkout (multi-provider, recommended)</label>
+                    <comment>The customer picks a card provider on the hosted checkout page. Providers are matched to the customer's country automatically for the highest approval rate.</comment>
+                    <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1">
+                        <label>Enabled</label>
+                        <config_path>payment/paygate_hosted/active</config_path>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Title</label>
+                        <config_path>payment/paygate_hosted/title</config_path>
+                    </field>
+                    <field id="description" translate="label" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Description</label>
+                        <config_path>payment/paygate_hosted/description</config_path>
+                    </field>
+                    <field id="logo_url" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1">
+                        <label>Custom Logo URL</label>
+                        <config_path>payment/paygate_hosted/logo_url</config_path>
+                        <backend_model>PayGate\InstantPayment\Model\Config\Backend\LogoUrl</backend_model>
+                        <comment>Optional. A full https:// image URL of your brand logo for the hosted checkout page.</comment>
+                    </field>
+                    <field id="background_color" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1">
+                        <label>Background Color</label>
+                        <config_path>payment/paygate_hosted/background_color</config_path>
+                        <backend_model>PayGate\InstantPayment\Model\Config\Backend\Color</backend_model>
+                        <comment>Optional. A HEX color code such as #f6f9fc, or a CSS color name.</comment>
+                    </field>
+                    <field id="theme_color" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1">
+                        <label>Theme Color</label>
+                        <config_path>payment/paygate_hosted/theme_color</config_path>
+                        <backend_model>PayGate\InstantPayment\Model\Config\Backend\Color</backend_model>
+                        <comment>Optional. A HEX color code or a CSS color name.</comment>
+                    </field>
+                    <field id="button_color" translate="label comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1">
+                        <label>Button Color</label>
+                        <config_path>payment/paygate_hosted/button_color</config_path>
+                        <backend_model>PayGate\InstantPayment\Model\Config\Backend\Color</backend_model>
+                        <comment>Optional. A HEX color code or a CSS color name.</comment>
+                    </field>
+                    <field id="allowspecific" translate="label" type="allowspecific" sortOrder="80" showInDefault="1" showInWebsite="1">
+                        <label>Payment from Applicable Countries</label>
+                        <config_path>payment/paygate_hosted/allowspecific</config_path>
+                        <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                    </field>
+                    <field id="specificcountry" translate="label" type="multiselect" sortOrder="90" showInDefault="1" showInWebsite="1">
+                        <label>Payment from Specific Countries</label>
+                        <config_path>payment/paygate_hosted/specificcountry</config_path>
+                        <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                        <can_be_empty>1</can_be_empty>
+                        <depends>
+                            <field id="allowspecific">1</field>
+                        </depends>
+                    </field>
+                    <field id="sort_order" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1">
+                        <label>Sort Order</label>
+                        <config_path>payment/paygate_hosted/sort_order</config_path>
+                        <frontend_class>validate-number</frontend_class>
+                    </field>
+                </group>
+
+                <group id="provider" translate="label comment" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Single provider</label>
+                    <comment>The customer is sent straight to one card provider that you choose.</comment>
+                    <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1">
+                        <label>Enabled</label>
+                        <config_path>payment/paygate_provider/active</config_path>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Title</label>
+                        <config_path>payment/paygate_provider/title</config_path>
+                    </field>
+                    <field id="description" translate="label" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Description</label>
+                        <config_path>payment/paygate_provider/description</config_path>
+                    </field>
+                    <field id="provider" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1">
+                        <label>Provider Tag</label>
+                        <config_path>payment/paygate_provider/provider</config_path>
+                        <backend_model>PayGate\InstantPayment\Model\Config\Backend\ProviderTag</backend_model>
+                        <comment><![CDATA[The provider id from the <a href="https://api.paygate.to/control/provider-status/" target="_blank" rel="noopener">provider tag list</a>, for example moonpay. Some providers accept one currency only (see the API docs).]]></comment>
+                    </field>
+                    <field id="minimum_amount" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1">
+                        <label>Minimum Amount (USD)</label>
+                        <config_path>payment/paygate_provider/minimum_amount</config_path>
+                        <frontend_class>validate-zero-or-greater</frontend_class>
+                        <comment>Minimum order total, in USD, accepted by this provider.</comment>
+                    </field>
+                    <field id="allowspecific" translate="label" type="allowspecific" sortOrder="60" showInDefault="1" showInWebsite="1">
+                        <label>Payment from Applicable Countries</label>
+                        <config_path>payment/paygate_provider/allowspecific</config_path>
+                        <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                    </field>
+                    <field id="specificcountry" translate="label" type="multiselect" sortOrder="70" showInDefault="1" showInWebsite="1">
+                        <label>Payment from Specific Countries</label>
+                        <config_path>payment/paygate_provider/specificcountry</config_path>
+                        <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                        <can_be_empty>1</can_be_empty>
+                        <depends>
+                            <field id="allowspecific">1</field>
+                        </depends>
+                    </field>
+                    <field id="sort_order" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1">
+                        <label>Sort Order</label>
+                        <config_path>payment/paygate_provider/sort_order</config_path>
+                        <frontend_class>validate-number</frontend_class>
+                    </field>
+                </group>
+            </group>
+        </section>
+    </system>
+</config>

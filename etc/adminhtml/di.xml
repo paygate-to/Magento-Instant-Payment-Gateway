@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- The admin order pages show the full PayGate payment details -->
+    <type name="PayGate\InstantPayment\Block\Info">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="is_secure_mode" xsi:type="string">0</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
